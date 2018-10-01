@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">Jinder</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_logout">Log out</string>
+    <string name="title_swipe">Swipe</string>
+    <string name="title_listings">Listings</string>
+    <string name="title_preferences">Filter</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello main fragment</string>
+    <string name="add_listing">http://www.roomsnz.com/android/jinder/add_listing.php</string>
+    <string name="post">POST</string>
+    <string name="insert_listing">http://www.roomsnz.com/android/jinder/insert_listing.php</string>
+    <string name="send_FCM">http://www.roomsnz.com/android/jinder/send_FCM.php</string>
+    <string name="log_in">http://www.roomsnz.com/android/jinder/log_in.php</string>
+    <string name="user_id">user_id</string>
+    <string name="id">id</string>
+
+    <string name="msg">msg</string>
+    <string name="listing_title">listing_title</string>
+    <string name="iso">iso-8859-1</string>
+    <string name="and"><![CDATA[&]]></string>
+    <string name="utf8">UTF-8</string>
+    <string name="company">listing_company</string>
+    <string name="desc">listing_desc</string>
+    <string name="_desc">_desc</string>
+    <string name="listing_location">listing_location</string>
+    <string name="location">location</string>
+    <string name="qual">qual</string>
+    <string name="close">closing_date</string>
+    <string name="listed">listed_date</string>
+    <string name="p_word">pass_word</string>
+    <string name="wage">wage</string>
+    <string name="type">type</string>
+    <string name="min">sal_min</string>
+    <string name="max">sal_max</string>
+    <string name="get_listings">http://www.roomsnz.com/android/jinder/get_listings.php</string>
+    <string name="update_token">http://www.roomsnz.com/android/jinder/update_token.php</string>
+    <string name="lat">lat</string>
+    <string name="lng">lng</string>
+    <string name="add_location">http://www.roomsnz.com/android/jinder/add_location.php</string>
+    <string name="f_name">f_name</string>
+    <string name="last_name">l_name</string>
+    <string name="register">http://www.roomsnz.com/android/jinder/register.php</string>
+    <string name="u_name">u_name</string>
+    <string name="email">email</string>
+    <string name="channel_name">Job Search</string>
+    <string name="channel_description">Job Search notification channel</string>
+    <string name="img_file_path">img_file_path</string>
+    <string name="token">token</string>
+    <string name="password">password</string>
+    <string name="fName">fName</string>
+    <string name="lName">lName</string>
+    <string name="uName">uName</string>
+    <string name="bio">bio</string>
+    <string name="qualification">qualification</string>
+</resources>

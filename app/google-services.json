@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1093297543571",
+    "firebase_url": "https://jobsearchfinal-bf6f5.firebaseio.com",
+    "project_id": "jobsearchfinal-bf6f5",
+    "storage_bucket": "jobsearchfinal-bf6f5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1093297543571:android:d7514962fffc754c",
+        "android_client_info": {
+          "package_name": "com.activities.dwtaplin.jobsearchfinal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1093297543571-k4jo14fqpm1tt3e8sov11clisp9rdo12.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.activities.dwtaplin.jobsearchfinal",
+            "certificate_hash": "69e2e4560741d25a2ca4aab3004ba56d56f7df3d"
+          }
+        },
+        {
+          "client_id": "1093297543571-9b2n8g10995or5ib5q6it5pl28ucr8n4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDii2uiUB8RDSH-mNaLpeULVYXmeJfdABE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1093297543571-9b2n8g10995or5ib5q6it5pl28ucr8n4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="location">
+        <item name="Wellington">Wellington</item>
+        <item name="Auckland">Auckland</item>
+        <item name="Christchurch">Christchurch</item>
+        <item name="Tauranga">Tauranga</item>
+        <item name="Dunedin">Dunedin</item>
+        <item name="New Plymouth">New Plymouth</item>
+        <item name="Palmerston North">Palmerston North</item>
+        <item name="Hamilton">Hamilton</item>
+        <item name="Queenstown">Queenstown</item>
+    </string-array>
+
+    <string-array name="jobType">
+        <item name="Hair Dressing">Hair Dressing</item>
+        <item name="IT">IT </item>
+        <item name="Construction">Construction</item>
+        <item name="Engineering">Engineering</item>
+        <item name="Automotive">Automotive</item>
+        <item name="Electrical Engineering">Electrical Engineering</item>
+        <item name="Accounting">Accounting</item>
+        <item name="Architecture">Architecture</item>
+        <item name="Education">Education</item>
+    </string-array>
+
+    <string-array name="qualification">
+        <item name="No Qualifications">No Qualifications</item>
+        <item name="Bachelor of Accounting">Bachelor of Accounting</item>
+        <item name="Bachelor of Science">Bachelor of Science</item>
+        <item name="Bachelor of Nursing">Bachelor of Nursing</item>
+        <item name="Bachelor of Engineering">Bachelor of Engineering</item>
+        <item name="Bachelor of Commerce">Bachelor of Commerce</item>
+        <item name="Bachelor of Agriculture">Bachelor of Agriculture</item>
+        <item name="Diploma of Computer Servicing">Diploma of Computer Servicing</item>
+        <item name="Diploma of Computer Servicing">Diploma of Makeup Artistry</item>
+    </string-array>
+</resources>

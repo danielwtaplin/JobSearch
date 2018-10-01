@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_3x"
+            android:title="Home" />
+        <item
+            android:id="@+id/nav_watchlist"
+            android:icon="@drawable/ic_watchlist"
+            android:title="Watchlist" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_profile"
+            android:title="Profile" />
+        <item
+            android:id="@+id/nav_add"
+            android:icon="@drawable/ic_add"
+            android:title="Add listing" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_file"
+            android:title="Upload files" />
+        <item
+            android:id="@+id/nav_message"
+            android:icon="@drawable/ic_message"
+            android:title="Messages" />
+        <item
+            android:id="@+id/nav_notification"
+            android:icon="@drawable/ic_notification"
+            android:title="Notifications" />
+    </group>
+
+    <item android:title="About">
+        <menu android:id="@+id/o_menu">
+            <item
+                android:id="@+id/nav_browser"
+                android:icon="@drawable/ic_browser"
+                android:title="Open in browser" />
+        </menu>
+    </item>
+
+</menu>
