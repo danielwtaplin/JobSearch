@@ -46,7 +46,7 @@ public class SwipeFragment extends android.support.v4.app.Fragment {
             bgWorker.execute();
         }
         else {
-            SwipeAdapter adapter = new SwipeAdapter(getContext(), ((MainActivity)getActivity()).getJobArrayList());
+            SwipeAdapter adapter = new SwipeAdapter(getContext(), ((MainActivity)getActivity()).getJobArrayList(), ((MainActivity)getActivity()).getUser() );
             swipeView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             swipeView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
@@ -139,7 +139,7 @@ public class SwipeFragment extends android.support.v4.app.Fragment {
 
         @Override
         protected void onPostExecute(Object o) {
-            SwipeAdapter adapter = new SwipeAdapter(getContext(), jobs);
+            SwipeAdapter adapter = new SwipeAdapter(getContext(), jobs, ((MainActivity)getActivity()).getUser());
             swipeView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
             swipeView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {

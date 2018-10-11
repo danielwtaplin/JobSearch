@@ -1,6 +1,7 @@
 package com.activities.dwtaplin.jobsearchfinal.adapters;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,7 +12,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.activities.dwtaplin.jobsearchfinal.R;
+import com.activities.dwtaplin.jobsearchfinal.actors.User;
 import com.activities.dwtaplin.jobsearchfinal.components.Job;
+import com.activities.dwtaplin.jobsearchfinal.database.ServerManager;
 
 import java.util.ArrayList;
 
@@ -22,10 +25,14 @@ import java.util.ArrayList;
 public class SwipeAdapter extends ArrayAdapter{
     private Context context;
     private ArrayList<Job> jobs;
-    public SwipeAdapter(Context context, ArrayList<Job> jobs) {
+    private User user;
+    private Button btnApply;
+    private TextView txtTitle;
+    public SwipeAdapter(Context context, ArrayList<Job> jobs, User user) {
         super(context, R.layout.swipe_card_item, jobs);
         this.context = context;
         this.jobs = jobs;
+        this.user = user;
     }
 
     @NonNull
@@ -34,7 +41,7 @@ public class SwipeAdapter extends ArrayAdapter{
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View view = inflater.inflate(R.layout.swipe_card_item, parent, false);
         Job job = jobs.get(position);
-        TextView txtTitle =  view.findViewById(R.id.txtJobTitle);
+        txtTitle =  view.findViewById(R.id.txtJobTitle);
         TextView txtLocation = view.findViewById(R.id.txtLocation);
         TextView txtExp = view.findViewById(R.id.txtExperience);
         TextView txtDesc = view.findViewById(R.id.txtDesc);
@@ -42,8 +49,8 @@ public class SwipeAdapter extends ArrayAdapter{
         TextView txtSalary = view.findViewById(R.id.txtSalary);
         TextView txtDistance = view.findViewById(R.id.txtDistance);
         Button btnWatchlist = view.findViewById(R.id.btnWatchlist);
-        Button btnApply = view.findViewById(R.id.btnApply);
-        btnWatchlist.setOnClickListener(view1 -> addToWatchlist());
+        btnApply = view.findViewById(R.id.btnApply);
+        btnWatchlist.setOnClickListener(view1 -> addToWatchlist(btnWatchlist, job));
         btnApply.setOnClickListener(view12 -> apply());
         txtTitle.setText(job.getTitle());
         txtLocation.setText(job.getCity());
@@ -63,11 +70,29 @@ public class SwipeAdapter extends ArrayAdapter{
     }
 
     private void apply() {
+        btnApply.setText("remove");
 
     }
 
-    private void addToWatchlist() {
+    private void addToWatchlist(Button btn, Job job) {
+        AsyncTask asyncTask = new AsyncTask() {
+            boolean verdict = false;
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                verdict = new ServerManager(getContext()).updateWatchlist(user.getServerId(), job.getId());
+                return null;
+            }
 
+            @Override
+            protected void onPostExecute(Object o) {
+                super.onPostExecute(o);
+                if(verdict)
+                    btn.setText("Stop watching");
+                else
+                    btn.setText("Watchlist");
+            }
+        };
+        asyncTask.execute();
     }
 
 }

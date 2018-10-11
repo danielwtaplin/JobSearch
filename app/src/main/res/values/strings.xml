@@ -42,6 +42,7 @@
     <string name="lat">lat</string>
     <string name="lng">lng</string>
     <string name="add_location">http://www.roomsnz.com/android/jinder/add_location.php</string>
+    <string name="update_watchlist">http://www.roomsnz.com/android/jinder/update_watchlist.php</string>
     <string name="f_name">f_name</string>
     <string name="last_name">l_name</string>
     <string name="register">http://www.roomsnz.com/android/jinder/register.php</string>
@@ -57,4 +58,6 @@
     <string name="uName">uName</string>
     <string name="bio">bio</string>
     <string name="qualification">qualification</string>
+    <string name="user">user</string>
+    <string name="listing">listing</string>
 </resources>

@@ -141,6 +141,44 @@ public class ServerManager {
 
     }
 
+    public boolean updateWatchlist(int user, int listing){
+        try {
+            HttpURLConnection httpURLConnection = getHttpURLConnection(context.getString(R.string.update_watchlist));
+            OutputStream outStream = httpURLConnection.getOutputStream();
+            BufferedWriter bWriter = new BufferedWriter(new OutputStreamWriter(outStream, context.getString(R.string.utf8)));
+            String postData;
+            HashMap<String, String> toPost = new HashMap<>();
+            toPost.put(context.getString(R.string.user), String.valueOf(user));
+            toPost.put(context.getString(R.string.listing), String.valueOf(listing));
+            postData = preparePostData(toPost);
+            System.out.println(postData);
+            bWriter.write(postData);
+            bWriter.flush();
+            bWriter.close();
+            outStream.close();
+            InputStream inStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStream, context.getString(R.string.iso)));
+            String result = "";
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                result += line;
+            }
+            bufferedReader.close();
+            inStream.close();
+            httpURLConnection.disconnect();
+            System.out.println(result);
+            if(result.equals("added"))
+                return true;
+            else
+                return false;
+
+        }catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
     private String preparePostData(HashMap<String, String> map){
         String postData ="";
         Iterator i = map.entrySet().iterator();

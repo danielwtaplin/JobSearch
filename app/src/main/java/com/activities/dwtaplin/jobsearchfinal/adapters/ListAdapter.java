@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.activities.dwtaplin.jobsearchfinal.R;
@@ -40,7 +41,11 @@ public class ListAdapter  extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         String sDate = date.getDay() + "/" + date.getMonth() + "/" + date.getYear();
         holder.txtDateListed.setText(sDate);
         holder.txtDesc.setText(job.getDesc());
+        holder.btnWatchlist.setOnClickListener(v -> {
+            holder.btnWatchlist.setText("remove");
+        });
     }
+
 
     @Override
     public int getItemCount() {
@@ -49,6 +54,7 @@ public class ListAdapter  extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtCompany, txtJobTitle, txtDateListed, txtLocation, txtDesc;
+        Button btnWatchlist, btnApply;
         public ViewHolder(View itemView) {
             super(itemView);
             txtCompany = itemView.findViewById(R.id.txtCompany);
@@ -56,6 +62,8 @@ public class ListAdapter  extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             txtDateListed = itemView.findViewById(R.id.txtDateListed);
             txtLocation = itemView.findViewById(R.id.txtLocation);
             txtDesc = itemView.findViewById(R.id.txtDesc);
+            btnWatchlist = itemView.findViewById(R.id.btnWatchlist);
+            btnApply = itemView.findViewById(R.id.btnApply);
 
         }
     }
