@@ -330,4 +330,8 @@ public class ServerManager {
             e.printStackTrace();
         }
     }
+
+    public boolean apply(Job job, User user) {
+        return true;
+    }
 }

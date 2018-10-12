@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.activities.dwtaplin.jobsearchfinal.R;
 import com.activities.dwtaplin.jobsearchfinal.actors.User;
@@ -26,7 +27,6 @@ public class SwipeAdapter extends ArrayAdapter{
     private Context context;
     private ArrayList<Job> jobs;
     private User user;
-    private Button btnApply;
     private TextView txtTitle;
     public SwipeAdapter(Context context, ArrayList<Job> jobs, User user) {
         super(context, R.layout.swipe_card_item, jobs);
@@ -49,9 +49,35 @@ public class SwipeAdapter extends ArrayAdapter{
         TextView txtSalary = view.findViewById(R.id.txtSalary);
         TextView txtDistance = view.findViewById(R.id.txtDistance);
         Button btnWatchlist = view.findViewById(R.id.btnWatchlist);
-        btnApply = view.findViewById(R.id.btnApply);
-        btnWatchlist.setOnClickListener(view1 -> addToWatchlist(btnWatchlist, job));
-        btnApply.setOnClickListener(view12 -> apply());
+        Button btnApply = view.findViewById(R.id.btnApply);
+        btnWatchlist.setOnClickListener(v -> addToWatchlist(btnWatchlist, job));
+        btnApply.setOnClickListener(v1 -> {
+            if(((String)btnApply.getTag()).equals("view")){
+
+            }
+            else {
+                AsyncTask task = new AsyncTask() {
+                    boolean applied = false;
+
+                    @Override
+                    protected Object doInBackground(Object[] objects) {
+                        applied = new ServerManager(getContext()).apply(job, user);
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Object o) {
+                        super.onPostExecute(o);
+                        if (applied) {
+                            btnApply.setText("view application");
+                        } else {
+                            Toast.makeText(getContext(), "Sorry something went wrong", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                };
+                task.execute();
+            }
+        });
         txtTitle.setText(job.getTitle());
         txtLocation.setText(job.getCity());
         txtDesc.setText(job.getDesc());
@@ -69,10 +95,6 @@ public class SwipeAdapter extends ArrayAdapter{
         return view;
     }
 
-    private void apply() {
-        btnApply.setText("remove");
-
-    }
 
     private void addToWatchlist(Button btn, Job job) {
         AsyncTask asyncTask = new AsyncTask() {
