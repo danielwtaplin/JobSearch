@@ -1,5 +1,6 @@
 package com.activities.dwtaplin.jobsearchfinal.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,9 +53,15 @@ public class SwipeAdapter extends ArrayAdapter{
         Button btnWatchlist = view.findViewById(R.id.btnWatchlist);
         Button btnApply = view.findViewById(R.id.btnApply);
         btnWatchlist.setOnClickListener(v -> addToWatchlist(btnWatchlist, job));
-        btnApply.setOnClickListener(v1 -> {
+        btnApply.setOnClickListener(v -> {
             if(((String)btnApply.getTag()).equals("view")){
-
+                AlertDialog.Builder alertView = new AlertDialog.Builder(getContext());
+                LayoutInflater factory = LayoutInflater.from(getContext());
+                final View v1 = factory.inflate(R.layout.apply_menu, null);
+                ListView listViewApply = view.findViewById(R.id.listViewApply);
+                String[] choices = {"Cover letters", "CV's", "Other documents"};
+                alertView.setView(v1);
+                alertView.show();
             }
             else {
                 AsyncTask task = new AsyncTask() {
