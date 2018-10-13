@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,15 +54,23 @@ public class SwipeAdapter extends ArrayAdapter{
         Button btnWatchlist = view.findViewById(R.id.btnWatchlist);
         Button btnApply = view.findViewById(R.id.btnApply);
         btnWatchlist.setOnClickListener(v -> addToWatchlist(btnWatchlist, job));
+        btnApply.setTag("apply");
         btnApply.setOnClickListener(v -> {
             if(((String)btnApply.getTag()).equals("view")){
-                AlertDialog.Builder alertView = new AlertDialog.Builder(getContext());
-                LayoutInflater factory = LayoutInflater.from(getContext());
-                final View v1 = factory.inflate(R.layout.apply_menu, null);
-                ListView listViewApply = view.findViewById(R.id.listViewApply);
-                String[] choices = {"Cover letters", "CV's", "Other documents"};
-                alertView.setView(v1);
-                alertView.show();
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                dialog.setTitle("What would you like to view?");
+                String[] choices = {"Cover letter", "CV", "Other documents"};
+                dialog.setItems(choices, ((dialogInterface, i) ->{
+                    switch(i){
+                        case 0:
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                    }
+                }));
+                dialog.show();
             }
             else {
                 AsyncTask task = new AsyncTask() {
@@ -84,6 +93,7 @@ public class SwipeAdapter extends ArrayAdapter{
                     }
                 };
                 task.execute();
+                btnApply.setTag("view");
             }
         });
         txtTitle.setText(job.getTitle());
