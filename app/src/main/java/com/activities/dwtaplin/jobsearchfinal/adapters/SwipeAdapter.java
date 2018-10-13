@@ -2,6 +2,7 @@ package com.activities.dwtaplin.jobsearchfinal.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,12 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activities.dwtaplin.jobsearchfinal.R;
+import com.activities.dwtaplin.jobsearchfinal.activities.ViewDocActivity;
 import com.activities.dwtaplin.jobsearchfinal.actors.User;
 import com.activities.dwtaplin.jobsearchfinal.components.Job;
 import com.activities.dwtaplin.jobsearchfinal.database.ServerManager;
@@ -63,6 +63,7 @@ public class SwipeAdapter extends ArrayAdapter{
                 dialog.setItems(choices, ((dialogInterface, i) ->{
                     switch(i){
                         case 0:
+                            getContext().startActivity(new Intent(getContext(), ViewDocActivity.class));
                             break;
                         case 1:
                             break;

@@ -3,7 +3,7 @@
     package="com.activities.dwtaplin.jobsearchfinal">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -24,19 +24,20 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.LogInActivity" />
-        <activity android:name=".activities.RegistrationActivity"></activity>
-        <service
-            android:name=".internet.InstanceToken">
+        <activity android:name=".activities.RegistrationActivity" />
+
+        <service android:name=".internet.InstanceToken">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service
-            android:name=".internet.MessagingService">
+        <service android:name=".internet.MessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <activity android:name=".activities.ViewDocActivity"></activity>
     </application>
 
 </manifest>
