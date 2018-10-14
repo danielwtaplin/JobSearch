@@ -2,9 +2,12 @@ package com.activities.dwtaplin.jobsearchfinal.activities;
 
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,12 +24,14 @@ import com.activities.dwtaplin.jobsearchfinal.actors.User;
 import com.activities.dwtaplin.jobsearchfinal.database.LocalDatabaseManager;
 import com.activities.dwtaplin.jobsearchfinal.database.ServerManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class RegistrationActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private EditText editFirstName, editLastName, editUserName, editEmail, editPassword, editConfirm, editDescription;
     private Spinner spinnerQual, spinnerLoc;
+    private Uri imageUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,13 +57,36 @@ public class RegistrationActivity extends AppCompatActivity implements AdapterVi
         btnRegister.setOnClickListener(view -> registerButtonClick());
         TextView txtProfile = findViewById(R.id.txtProfilePic);
         ImageView imgProfile = findViewById(R.id.imgProfile);
-        txtProfile.setOnClickListener(view -> selectImage());
-        imgProfile.setOnClickListener(view -> selectImage());
+        txtProfile.setOnClickListener(view -> openGallery());
+        imgProfile.setOnClickListener(view -> openGallery());
 
     }
 
-    private void selectImage() {
+    public void openGallery() {
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
 
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+        startActivityForResult(chooserIntent, 1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 1) {
+            imageUri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     private void registerButtonClick() {

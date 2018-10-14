@@ -3,11 +3,14 @@ package com.activities.dwtaplin.jobsearchfinal.fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -35,9 +38,12 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
+
+import static android.app.Activity.RESULT_OK;
 
 public class NewListingFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener {
 
@@ -55,6 +61,7 @@ public class NewListingFragment extends android.support.v4.app.Fragment implemen
     private Integer wage = null, salaryMin = null, salaryMax = null;
     private FusedLocationProviderClient mFusedLocationClient;
     private LatLng latLng;
+    private Uri imageUri;
 
     public NewListingFragment() {
     }
@@ -76,19 +83,42 @@ public class NewListingFragment extends android.support.v4.app.Fragment implemen
                         Manifest.permission.ACCESS_COARSE_LOCATION},1);
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getContext(), "Sorry bruh", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "cannot obtain location", Toast.LENGTH_SHORT).show();
             return;
         }
         mFusedLocationClient.getLastLocation()
                 .addOnSuccessListener(getActivity(), location -> {
                     if (location != null) {
                         latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                        Toast.makeText(getContext(), latLng.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Toast.makeText(getContext(), "Location is null", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    public void openGallery() {
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+        startActivityForResult(chooserIntent, 1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 1) {
+            imageUri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

@@ -1,15 +1,18 @@
 package com.activities.dwtaplin.jobsearchfinal.database;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Pair;
 
 import com.activities.dwtaplin.jobsearchfinal.R;
 import com.activities.dwtaplin.jobsearchfinal.actors.User;
+import com.activities.dwtaplin.jobsearchfinal.components.Document;
 import com.activities.dwtaplin.jobsearchfinal.components.Job;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -329,6 +332,39 @@ public class ServerManager {
         }catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean addFile(Document doc, User user){
+        try{
+            HttpURLConnection httpURLConnection = getHttpURLConnection(context.getString(R.string.add_file));
+            OutputStream outStream = httpURLConnection.getOutputStream();
+            BufferedWriter bWriter = new BufferedWriter(new OutputStreamWriter(outStream, context.getString(R.string.utf8)));
+            String postData = "";
+            //postData = prepareEncodedStatement(context.getString(R.string.id), String.valueOf(id)) + and + prepareEncodedStatement(context.getString(R.string.token), token);
+            bWriter.write(postData);
+            bWriter.flush();
+            bWriter.close();
+            outStream.close();
+            InputStream inStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStream, context.getString(R.string.iso)));
+            String result = "";
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                result += line;
+            }
+            bufferedReader.close();
+            inStream.close();
+            httpURLConnection.disconnect();
+            if(result.equals("success"))
+                return true;
+            else
+                return false;
+
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public boolean apply(Job job, User user) {
