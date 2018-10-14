@@ -9,7 +9,6 @@ import com.activities.dwtaplin.jobsearchfinal.actors.User;
 import com.activities.dwtaplin.jobsearchfinal.components.Document;
 import com.activities.dwtaplin.jobsearchfinal.components.Job;
 import com.google.android.gms.maps.model.LatLng;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
