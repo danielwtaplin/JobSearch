@@ -12,11 +12,13 @@ import android.view.ViewGroup;
 
 import com.activities.dwtaplin.jobsearchfinal.R;
 import com.activities.dwtaplin.jobsearchfinal.activities.MainActivity;
+import com.activities.dwtaplin.jobsearchfinal.actors.User;
 import com.activities.dwtaplin.jobsearchfinal.adapters.SwipeAdapter;
 import com.activities.dwtaplin.jobsearchfinal.components.Job;
 import com.activities.dwtaplin.jobsearchfinal.database.ServerManager;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 
@@ -33,7 +35,6 @@ public class SwipeFragment extends android.support.v4.app.Fragment {
     public SwipeFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,8 +55,11 @@ public class SwipeFragment extends android.support.v4.app.Fragment {
                 public void removeFirstObjectInAdapter() {
                     // this is the simplest way to delete an object from the Adapter (/AdapterView)
                     Log.d("LIST", "removed object!");
-                    ((MainActivity)getActivity()).getJobArrayList().remove(0);
+                    MainActivity activity = (MainActivity) getActivity();
+                    activity.getJobArrayList().remove(0);
                     adapter.notifyDataSetChanged();
+                    Task task = new Task(activity, activity.getJobArrayList().get(0));
+
                 }
 
                 @Override
@@ -88,6 +92,22 @@ public class SwipeFragment extends android.support.v4.app.Fragment {
         return view;
     }
 
+    private static class Task extends AsyncTask{
+        private WeakReference<MainActivity> mainActivityWeakReference;
+        private Job job;
+        private User user;
+        public Task(MainActivity activity, Job job){
+            mainActivityWeakReference = new WeakReference<>(activity);
+            this.job = job;
+            user = activity.getUser();
+        }
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            new ServerManager(mainActivityWeakReference.get()).updateWatchlist(user.getServerId(), job.getId());
+            return null;
+        }
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -112,16 +132,6 @@ public class SwipeFragment extends android.support.v4.app.Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

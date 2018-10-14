@@ -11,15 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activities.dwtaplin.jobsearchfinal.R;
+import com.activities.dwtaplin.jobsearchfinal.activities.MainActivity;
 import com.activities.dwtaplin.jobsearchfinal.activities.ViewDocActivity;
 import com.activities.dwtaplin.jobsearchfinal.actors.User;
 import com.activities.dwtaplin.jobsearchfinal.components.Job;
 import com.activities.dwtaplin.jobsearchfinal.database.ServerManager;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
@@ -56,7 +59,7 @@ public class SwipeAdapter extends ArrayAdapter{
         btnWatchlist.setOnClickListener(v -> addToWatchlist(btnWatchlist, job));
         btnApply.setTag("apply");
         btnApply.setOnClickListener(v -> {
-            if(((String)btnApply.getTag()).equals("view")){
+            if((btnApply.getTag()).equals("view")){
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
                 dialog.setTitle("What would you like to view?");
                 String[] choices = {"Cover letter", "CV", "Other documents"};
@@ -74,25 +77,7 @@ public class SwipeAdapter extends ArrayAdapter{
                 dialog.show();
             }
             else {
-                AsyncTask task = new AsyncTask() {
-                    boolean applied = false;
-
-                    @Override
-                    protected Object doInBackground(Object[] objects) {
-                        applied = new ServerManager(getContext()).apply(job, user);
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Object o) {
-                        super.onPostExecute(o);
-                        if (applied) {
-                            btnApply.setText("view application");
-                        } else {
-                            Toast.makeText(getContext(), "Sorry something went wrong", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                };
+                ApplyTask task = new ApplyTask(((MainActivity) getContext()), job, btnApply);
                 task.execute();
                 btnApply.setTag("view");
             }
@@ -102,6 +87,14 @@ public class SwipeAdapter extends ArrayAdapter{
         txtDesc.setText(job.getDesc());
         txtExp.setText(job.getQual());
         txtCompany.setText(job.getCompany());
+        ImageView iconLike = view.findViewById(R.id.iconLike);
+        ImageView iconDislike = view.findViewById(R.id.iconDislike);
+        iconLike.setOnClickListener(v ->{
+            this.notifyDataSetChanged();
+        });
+        iconDislike.setOnClickListener(v -> {
+
+        });
         if(job.getWage() != null){
             txtSalary.setText("$" + String.valueOf(job.getWage()) + " hourly");
         }
@@ -114,26 +107,70 @@ public class SwipeAdapter extends ArrayAdapter{
         return view;
     }
 
+    private static class ApplyTask extends AsyncTask{
+        private boolean applied = false;
+        private WeakReference<MainActivity> mainActivityWeakReference;
+        private WeakReference<Button> buttonWeakReference;
+        private Job job;
+        private User user;
+        public ApplyTask(MainActivity activity, Job job, Button button){
+            mainActivityWeakReference = new WeakReference<>(activity);
+            buttonWeakReference = new WeakReference<>(button);
+            this.job = job;
+            this.user = activity.getUser();
+        }
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            applied = new ServerManager(mainActivityWeakReference.get()).apply(job, user);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+            Button btnApply = buttonWeakReference.get();
+            if (applied) {
+                btnApply.setText("view application");
+            } else {
+                Toast.makeText(mainActivityWeakReference.get(), "Sorry something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+
+    private static class WatchlistTask extends AsyncTask{
+        private WeakReference<MainActivity> mainActivityWeakReference;
+        private WeakReference<Button> buttonWeakReference;
+        private boolean verdict = false;
+        private User user;
+        private Job job;
+        public WatchlistTask(MainActivity activity, Job job, Button button) {
+            mainActivityWeakReference = new WeakReference<>(activity);
+            buttonWeakReference = new WeakReference<>(button);
+            this.job = job;
+            this.user = activity.getUser();
+
+        }
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            verdict = new ServerManager(mainActivityWeakReference.get()).updateWatchlist(user.getServerId(), job.getId());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+            Button button = buttonWeakReference.get();
+            if(verdict)
+                button.setText("Stop watching");
+            else
+                button.setText("Watchlist");
+        }
+    }
 
     private void addToWatchlist(Button btn, Job job) {
-        AsyncTask asyncTask = new AsyncTask() {
-            boolean verdict = false;
-            @Override
-            protected Object doInBackground(Object[] objects) {
-                verdict = new ServerManager(getContext()).updateWatchlist(user.getServerId(), job.getId());
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Object o) {
-                super.onPostExecute(o);
-                if(verdict)
-                    btn.setText("Stop watching");
-                else
-                    btn.setText("Watchlist");
-            }
-        };
-        asyncTask.execute();
+        WatchlistTask task = new WatchlistTask(((MainActivity) getContext()), job, btn);
+        task.execute();
     }
 
 }
