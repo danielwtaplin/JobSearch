@@ -1,12 +1,15 @@
 package com.activities.dwtaplin.jobsearchfinal.fragments;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.activities.dwtaplin.jobsearchfinal.R;
 import com.activities.dwtaplin.jobsearchfinal.activities.MainActivity;
@@ -46,10 +49,30 @@ public class UploadFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         ((MainActivity)getActivity()).getToolbar().setSubtitle("Upload Files");
         View view = inflater.inflate(R.layout.fragment_upload, container, false);
+        Button btnUpload = view.findViewById(R.id.btnUpload);
+        btnUpload.setOnClickListener(v -> {
+            openFileSelector();
+        });
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    private void openFileSelector() {
+        Intent intent = new Intent();
+        intent.setType("*/*")
+                .setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select file"), 1 );
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Activity.RESULT_OK){
+            if(requestCode == 1 && data != null){
+                Uri fileUri = data.getData();
+            }
+        }
+    }
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -74,7 +97,6 @@ public class UploadFragment extends android.support.v4.app.Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }
