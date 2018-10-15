@@ -370,4 +370,33 @@ public class ServerManager {
     public boolean apply(Job job, User user) {
         return true;
     }
+
+    public void viewedJob(Job job, User user) {
+        try{
+            HttpURLConnection httpURLConnection = getHttpURLConnection(context.getString(R.string.reject));
+            OutputStream outStream = httpURLConnection.getOutputStream();
+            BufferedWriter bWriter = new BufferedWriter(new OutputStreamWriter(outStream, context.getString(R.string.utf8)));
+            String postData;
+            HashMap map = new HashMap();
+            map.put(R.string.job, String.valueOf(job.getId()));
+            map.put(R.string.user, String.valueOf(user.getServerId()));
+            postData = preparePostData(map);
+            bWriter.write(postData);
+            bWriter.flush();
+            bWriter.close();
+            outStream.close();
+            InputStream inStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStream, context.getString(R.string.iso)));
+            String result = "";
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                result += line;
+            }
+            bufferedReader.close();
+            inStream.close();
+            httpURLConnection.disconnect();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 }

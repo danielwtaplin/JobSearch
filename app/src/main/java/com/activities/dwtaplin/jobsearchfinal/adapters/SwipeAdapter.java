@@ -90,10 +90,12 @@ public class SwipeAdapter extends ArrayAdapter{
         ImageView iconLike = view.findViewById(R.id.iconLike);
         ImageView iconDislike = view.findViewById(R.id.iconDislike);
         iconLike.setOnClickListener(v ->{
-            this.notifyDataSetChanged();
+           WatchlistTask task = new WatchlistTask(((MainActivity)getContext()), job, btnWatchlist);
+           task.execute();
         });
         iconDislike.setOnClickListener(v -> {
-
+            DislikeTask task = new DislikeTask(((MainActivity) getContext()), job);
+            task.execute();
         });
         if(job.getWage() != null){
             txtSalary.setText("$" + String.valueOf(job.getWage()) + " hourly");
@@ -165,6 +167,22 @@ public class SwipeAdapter extends ArrayAdapter{
                 button.setText("Stop watching");
             else
                 button.setText("Watchlist");
+        }
+    }
+
+    private static class DislikeTask extends AsyncTask{
+        private Job job;
+        private User user;
+        private WeakReference<MainActivity> mainActivityWeakReference;
+        public DislikeTask(MainActivity activity, Job job){
+            mainActivityWeakReference = new WeakReference<>(activity);
+            this.job = job;
+            this.user = activity.getUser();
+        }
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            new ServerManager(mainActivityWeakReference.get()).viewedJob(job, user);
+            return null;
         }
     }
 

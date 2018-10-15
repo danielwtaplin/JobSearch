@@ -16,6 +16,7 @@
     <string name="insert_listing">http://www.roomsnz.com/android/jinder/insert_listing.php</string>
     <string name="send_FCM">http://www.roomsnz.com/android/jinder/send_FCM.php</string>
     <string name="log_in">http://www.roomsnz.com/android/jinder/log_in.php</string>
+    <string name="reject">http://www.roomsnz.com/android/jinder/reject_job.php</string>
     <string name="user_id">user_id</string>
     <string name="id">id</string>
 
@@ -61,4 +62,5 @@
     <string name="user">user</string>
     <string name="listing">listing</string>
     <string name="add_file">http://www.roomsnz.com/android/jinder/add_file.php</string>
+    <string name="job">job</string>
 </resources>
