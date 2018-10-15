@@ -1,6 +1,7 @@
 package com.activities.dwtaplin.jobsearchfinal.adapters;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +10,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.activities.dwtaplin.jobsearchfinal.R;
+import com.activities.dwtaplin.jobsearchfinal.activities.MainActivity;
+import com.activities.dwtaplin.jobsearchfinal.actors.User;
 import com.activities.dwtaplin.jobsearchfinal.components.Job;
+import com.activities.dwtaplin.jobsearchfinal.database.ServerManager;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -42,7 +47,8 @@ public class ListAdapter  extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         holder.txtDateListed.setText(sDate);
         holder.txtDesc.setText(job.getDesc());
         holder.btnWatchlist.setOnClickListener(v -> {
-            holder.btnWatchlist.setText("remove");
+            WatchlistTask task = new WatchlistTask(((MainActivity)context), job, holder.btnWatchlist);
+            task.execute();
         });
     }
 
@@ -67,4 +73,37 @@ public class ListAdapter  extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         }
     }
+
+    private static class WatchlistTask extends AsyncTask {
+        private WeakReference<MainActivity> mainActivityWeakReference;
+        private WeakReference<Button> buttonWeakReference;
+        private boolean verdict = false;
+        private User user;
+        private Job job;
+        public WatchlistTask(MainActivity activity, Job job, Button button) {
+            mainActivityWeakReference = new WeakReference<>(activity);
+            buttonWeakReference = new WeakReference<>(button);
+            this.job = job;
+            this.user = activity.getUser();
+
+        }
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            verdict = new ServerManager(mainActivityWeakReference.get()).updateWatchlist(user.getServerId(), job.getId());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+            Button button = buttonWeakReference.get();
+            if(verdict)
+                button.setText("Stop watching");
+            else
+                button.setText("Watchlist");
+        }
+    }
+
 }
+
+
