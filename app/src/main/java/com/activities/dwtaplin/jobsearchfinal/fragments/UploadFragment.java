@@ -4,15 +4,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.activities.dwtaplin.jobsearchfinal.R;
 import com.activities.dwtaplin.jobsearchfinal.activities.MainActivity;
+import com.activities.dwtaplin.jobsearchfinal.actors.User;
+import com.activities.dwtaplin.jobsearchfinal.database.ServerManager;
+
+import java.lang.ref.WeakReference;
 
 
 public class UploadFragment extends android.support.v4.app.Fragment {
@@ -69,6 +75,10 @@ public class UploadFragment extends android.support.v4.app.Fragment {
         if(resultCode == Activity.RESULT_OK){
             if(requestCode == 1 && data != null){
                 Uri fileUri = data.getData();
+                Toast.makeText(getContext(), fileUri.toString(), Toast.LENGTH_SHORT).show();
+                if(fileUri != null){
+
+                }
             }
         }
     }
@@ -98,5 +108,35 @@ public class UploadFragment extends android.support.v4.app.Fragment {
 
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+    }
+
+    private static class UploadFileTask extends AsyncTask{
+        private String type, file, name;
+        private User user;
+        private boolean success = false;
+        private WeakReference<MainActivity> mainActivityWeakReference;
+        public UploadFileTask(MainActivity activity, String type, String file, String name){
+            mainActivityWeakReference = new WeakReference<>(activity);
+            this.type = type;
+            this.file = file;
+            this.name = name;
+            user = activity.getUser();
+
+
+        }
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            success = new ServerManager(mainActivityWeakReference.get()).uploadFile(type, file, name, user);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            MainActivity activity = mainActivityWeakReference.get();
+            if(success){
+                Toast.makeText(activity, "Your file has been successfully uploaded", Toast.LENGTH_SHORT).show();
+            }
+            super.onPostExecute(o);
+        }
     }
 }

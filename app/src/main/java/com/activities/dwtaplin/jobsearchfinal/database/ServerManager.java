@@ -399,4 +399,8 @@ public class ServerManager {
             e.printStackTrace();
         }
     }
+
+    public boolean uploadFile(String type, String file, String name, User user) {
+        return false;
+    }
 }
