@@ -1,9 +1,7 @@
 package com.activities.dwtaplin.jobsearchfinal.database;
 
 import android.content.Context;
-import android.net.Uri;
 import android.util.Pair;
-
 import com.activities.dwtaplin.jobsearchfinal.R;
 import com.activities.dwtaplin.jobsearchfinal.actors.User;
 import com.activities.dwtaplin.jobsearchfinal.components.Document;
@@ -24,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,6 +35,36 @@ public class ServerManager {
         and = context.getString(R.string.and);
     }
 
+    public ArrayList<Job> getWatchList(User user) {
+        try {
+            HttpURLConnection httpURLConnection = getHttpURLConnection(context.getString(R.string.get_watchlist));
+            OutputStream outStream = httpURLConnection.getOutputStream();
+            BufferedWriter bWriter = new BufferedWriter(new OutputStreamWriter(outStream, context.getString(R.string.utf8)));
+            String postData;
+            postData = prepareEncodedStatement(context.getString(R.string.user), String.valueOf(user.getServerId()));
+            bWriter.write(postData);
+            bWriter.flush();
+            bWriter.close();
+            outStream.close();
+            InputStream inStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStream, context.getString(R.string.iso)));
+            String result = "";
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                result += line;
+            }
+            bufferedReader.close();
+            inStream.close();
+            httpURLConnection.disconnect();
+            ArrayList watchList = new JsonManager(context).decodeJobs(result);
+            return watchList;
+
+        }catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public User logIn(String email, String passWord){
         try {
             HttpURLConnection httpURLConnection = getHttpURLConnection(context.getString(R.string.log_in));
@@ -45,7 +72,6 @@ public class ServerManager {
             BufferedWriter bWriter = new BufferedWriter(new OutputStreamWriter(outStream, context.getString(R.string.utf8)));
             String postData;
             postData = prepareEncodedStatement(context.getString(R.string.email), email) + and + prepareEncodedStatement(context.getString(R.string.password), passWord);
-            System.out.println(postData);
             bWriter.write(postData);
             bWriter.flush();
             bWriter.close();
@@ -123,7 +149,6 @@ public class ServerManager {
             BufferedWriter bWriter = new BufferedWriter(new OutputStreamWriter(outStream, context.getString(R.string.utf8)));
             String postData;
             postData = prepareEncodedStatement(context.getString(R.string.user_id), String.valueOf(100));
-            System.out.println(postData);
             bWriter.write(postData);
             bWriter.flush();
             bWriter.close();
@@ -158,7 +183,6 @@ public class ServerManager {
             toPost.put(context.getString(R.string.user), String.valueOf(user));
             toPost.put(context.getString(R.string.listing), String.valueOf(listing));
             postData = preparePostData(toPost);
-            System.out.println(postData);
             bWriter.write(postData);
             bWriter.flush();
             bWriter.close();
@@ -229,7 +253,6 @@ public class ServerManager {
             String postData;
             postData = prepareEncodedStatement(context.getString(R.string.id), String.valueOf(id)) + and + prepareEncodedStatement(context.getString(R.string.lat), String.valueOf(latLng.latitude))
                 + and + prepareEncodedStatement(context.getString(R.string.lng), String.valueOf(latLng.longitude));
-            System.out.println(postData);
             bWriter.write(postData);
             bWriter.flush();
             bWriter.close();
@@ -267,7 +290,6 @@ public class ServerManager {
             toPost.put(context.getString(R.string.token), token);
             toPost.put(context.getString(R.string.password), passWord);
             postData = preparePostData(toPost);
-            System.out.println(postData);
             bWriter.write(postData);
             bWriter.flush();
             bWriter.close();
@@ -299,7 +321,6 @@ public class ServerManager {
             BufferedWriter bWriter = new BufferedWriter(new OutputStreamWriter(outStream, context.getString(R.string.utf8)));
             String postData;
             postData = prepareEncodedStatement(context.getString(R.string.id), token) + and + prepareEncodedStatement(context.getString(R.string.msg), "Message from server to FCM");
-            System.out.println(postData);
             bWriter.write(postData);
             bWriter.flush();
             bWriter.close();
@@ -317,7 +338,6 @@ public class ServerManager {
             BufferedWriter bWriter = new BufferedWriter(new OutputStreamWriter(outStream, context.getString(R.string.utf8)));
             String postData;
             postData = prepareEncodedStatement(context.getString(R.string.id), String.valueOf(id)) + and + prepareEncodedStatement(context.getString(R.string.token), token);
-            System.out.println(postData);
             bWriter.write(postData);
             bWriter.flush();
             bWriter.close();
@@ -406,6 +426,7 @@ public class ServerManager {
     }
 
     public boolean uploadFile(String type, File file, String name, User user) {
+        byte[] fileAsBytes = fileToByteArray(file);
         return false;
     }
 

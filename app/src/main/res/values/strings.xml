@@ -17,6 +17,7 @@
     <string name="send_FCM">http://www.roomsnz.com/android/jinder/send_FCM.php</string>
     <string name="log_in">http://www.roomsnz.com/android/jinder/log_in.php</string>
     <string name="reject">http://www.roomsnz.com/android/jinder/reject_job.php</string>
+    <string name="get_watchlist">http://www.roomsnz.com/android/jinder/get_watchlist.php</string>
     <string name="user_id">user_id</string>
     <string name="id">id</string>
 
