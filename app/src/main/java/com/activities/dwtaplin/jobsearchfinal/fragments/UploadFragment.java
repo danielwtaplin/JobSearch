@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,12 @@ import com.activities.dwtaplin.jobsearchfinal.activities.MainActivity;
 import com.activities.dwtaplin.jobsearchfinal.actors.User;
 import com.activities.dwtaplin.jobsearchfinal.database.ServerManager;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
 
@@ -27,7 +34,7 @@ public class UploadFragment extends android.support.v4.app.Fragment {
 
     private String mParam1;
     private String mParam2;
-
+    private TabLayout tabLayout;
     private OnFragmentInteractionListener mListener;
 
     public static UploadFragment newInstance(String param1, String param2) {
@@ -56,6 +63,7 @@ public class UploadFragment extends android.support.v4.app.Fragment {
         ((MainActivity)getActivity()).getToolbar().setSubtitle("Upload Files");
         View view = inflater.inflate(R.layout.fragment_upload, container, false);
         Button btnUpload = view.findViewById(R.id.btnUpload);
+        tabLayout = view.findViewById(R.id.tabLayout);
         btnUpload.setOnClickListener(v -> {
             openFileSelector();
         });
@@ -75,12 +83,32 @@ public class UploadFragment extends android.support.v4.app.Fragment {
         if(resultCode == Activity.RESULT_OK){
             if(requestCode == 1 && data != null){
                 Uri fileUri = data.getData();
-                Toast.makeText(getContext(), fileUri.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), new File(fileUri.getPath()).getAbsolutePath(), Toast.LENGTH_SHORT).show();
                 if(fileUri != null){
+                    String type  = "";
+                    switch(tabLayout.getSelectedTabPosition()){
+                        case 0:
+                            type = "resume";
+                            break;
+                        case 1:
+                            type = "cover";
+                            break;
+                        case 2:
+                            type = "other";
+                            break;
+                    }
+                    File selectedFile = new File(fileUri.getPath());
+                    String name = inputFileName();
+                    UploadFileTask task = new UploadFileTask(((MainActivity)getActivity()), type, selectedFile, name);
+                    task.execute();
 
                 }
             }
         }
+    }
+
+    private String inputFileName() {
+        return null;
     }
 
     public void onButtonPressed(Uri uri) {
@@ -111,11 +139,12 @@ public class UploadFragment extends android.support.v4.app.Fragment {
     }
 
     private static class UploadFileTask extends AsyncTask{
-        private String type, file, name;
+        private String type, name;
         private User user;
+        private File file;
         private boolean success = false;
         private WeakReference<MainActivity> mainActivityWeakReference;
-        public UploadFileTask(MainActivity activity, String type, String file, String name){
+        public UploadFileTask(MainActivity activity, String type, File file, String name){
             mainActivityWeakReference = new WeakReference<>(activity);
             this.type = type;
             this.file = file;
@@ -134,9 +163,10 @@ public class UploadFragment extends android.support.v4.app.Fragment {
         protected void onPostExecute(Object o) {
             MainActivity activity = mainActivityWeakReference.get();
             if(success){
-                Toast.makeText(activity, "Your file has been successfully uploaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "File successfully uploaded", Toast.LENGTH_SHORT).show();
             }
             super.onPostExecute(o);
         }
+
     }
 }

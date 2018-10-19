@@ -11,7 +11,11 @@ import com.activities.dwtaplin.jobsearchfinal.components.Job;
 import com.google.android.gms.maps.model.LatLng;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -394,13 +398,46 @@ public class ServerManager {
             }
             bufferedReader.close();
             inStream.close();
+            
             httpURLConnection.disconnect();
         } catch(Exception e){
             e.printStackTrace();
         }
     }
 
-    public boolean uploadFile(String type, String file, String name, User user) {
+    public boolean uploadFile(String type, File file, String name, User user) {
         return false;
+    }
+
+    private byte[] fileToByteArray(File file){
+        ByteArrayOutputStream ous = null;
+        InputStream ios = null;
+        try {
+            byte[] buffer = new byte[4096];
+            ous = new ByteArrayOutputStream();
+            ios = new FileInputStream(file);
+            int read = 0;
+            while ((read = ios.read(buffer)) != -1) {
+                ous.write(buffer, 0, read);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ous != null)
+                    ous.close();
+            } catch (IOException e) {
+            }
+
+            try {
+                if (ios != null)
+                    ios.close();
+            } catch (IOException e) {
+            }
+        }
+        return ous.toByteArray();
+
     }
 }
