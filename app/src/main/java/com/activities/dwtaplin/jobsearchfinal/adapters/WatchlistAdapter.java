@@ -30,9 +30,9 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.View
     @Override
     public void onBindViewHolder(WatchlistAdapter.ViewHolder holder, int position) {
         Job job = jobs.get(position);
-        holder.txtCompany.setText("Trademe");
+        holder.txtCompany.setText(job.getCompany());
         holder.txtTitle.setText(job.getTitle());
-        holder.txtLocation.setText("Tauranga");
+        holder.txtLocation.setText(job.getCity());
         holder.txtDesc.setText(job.getDesc());
         if(job.isApplied()){
             holder.watchListLayout.setVisibility(View.GONE);
