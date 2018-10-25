@@ -2,16 +2,16 @@ package com.activities.dwtaplin.jobsearchfinal.database;
 
 import android.content.Context;
 import android.util.Pair;
+
 import com.activities.dwtaplin.jobsearchfinal.R;
 import com.activities.dwtaplin.jobsearchfinal.actors.User;
 import com.activities.dwtaplin.jobsearchfinal.components.Document;
 import com.activities.dwtaplin.jobsearchfinal.components.Job;
 import com.google.android.gms.maps.model.LatLng;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -425,20 +425,22 @@ public class ServerManager {
         }
     }
 
-    public boolean uploadFile(String type, File file, String name, User user) {
-        byte[] fileAsBytes = fileToByteArray(file);
+    public boolean uploadFile(String type, InputStream inputStream, String name, User user) {
+        String crlf = "\r\n";
+        String twoHyphens = "--";
+        String boundary =  "*****";
+        byte[] fileAsBytes = fileToByteArray(inputStream);
+
         return false;
     }
 
-    private byte[] fileToByteArray(File file){
+    private byte[] fileToByteArray(InputStream inputStream){
         ByteArrayOutputStream ous = null;
-        InputStream ios = null;
         try {
             byte[] buffer = new byte[4096];
             ous = new ByteArrayOutputStream();
-            ios = new FileInputStream(file);
             int read = 0;
-            while ((read = ios.read(buffer)) != -1) {
+            while ((read = inputStream.read(buffer)) != -1) {
                 ous.write(buffer, 0, read);
             }
         } catch (FileNotFoundException e) {
@@ -453,8 +455,8 @@ public class ServerManager {
             }
 
             try {
-                if (ios != null)
-                    ios.close();
+                if (inputStream != null)
+                    inputStream.close();
             } catch (IOException e) {
             }
         }

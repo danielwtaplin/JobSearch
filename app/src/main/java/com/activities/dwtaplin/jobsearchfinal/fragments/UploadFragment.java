@@ -1,13 +1,13 @@
 package com.activities.dwtaplin.jobsearchfinal.fragments;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +19,7 @@ import com.activities.dwtaplin.jobsearchfinal.activities.MainActivity;
 import com.activities.dwtaplin.jobsearchfinal.actors.User;
 import com.activities.dwtaplin.jobsearchfinal.database.ServerManager;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
@@ -83,8 +79,9 @@ public class UploadFragment extends android.support.v4.app.Fragment {
         if(resultCode == Activity.RESULT_OK){
             if(requestCode == 1 && data != null){
                 Uri fileUri = data.getData();
-                Toast.makeText(getContext(), new File(fileUri.getPath()).getAbsolutePath(), Toast.LENGTH_SHORT).show();
-                if(fileUri != null){
+                ContentResolver contentResolver = getContext().getContentResolver();
+                try {
+                    InputStream inputStream = contentResolver.openInputStream(fileUri);
                     String type  = "";
                     switch(tabLayout.getSelectedTabPosition()){
                         case 0:
@@ -97,11 +94,11 @@ public class UploadFragment extends android.support.v4.app.Fragment {
                             type = "other";
                             break;
                     }
-                    File selectedFile = new File(fileUri.getPath());
                     String name = inputFileName();
-                    UploadFileTask task = new UploadFileTask(((MainActivity)getActivity()), type, selectedFile, name);
+                    UploadFileTask task = new UploadFileTask(((MainActivity)getActivity()), type, inputStream, name);
                     task.execute();
-
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -141,13 +138,13 @@ public class UploadFragment extends android.support.v4.app.Fragment {
     private static class UploadFileTask extends AsyncTask{
         private String type, name;
         private User user;
-        private File file;
+        private InputStream inputStream;
         private boolean success = false;
         private WeakReference<MainActivity> mainActivityWeakReference;
-        public UploadFileTask(MainActivity activity, String type, File file, String name){
+        public UploadFileTask(MainActivity activity, String type, InputStream inputStream, String name){
             mainActivityWeakReference = new WeakReference<>(activity);
             this.type = type;
-            this.file = file;
+            this.inputStream = inputStream;
             this.name = name;
             user = activity.getUser();
 
@@ -155,7 +152,7 @@ public class UploadFragment extends android.support.v4.app.Fragment {
         }
         @Override
         protected Object doInBackground(Object[] objects) {
-            success = new ServerManager(mainActivityWeakReference.get()).uploadFile(type, file, name, user);
+            success = new ServerManager(mainActivityWeakReference.get()).uploadFile(type, inputStream, name, user);
             return null;
         }
 
