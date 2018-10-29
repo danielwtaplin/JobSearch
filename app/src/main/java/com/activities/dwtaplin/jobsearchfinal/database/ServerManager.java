@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -425,16 +426,86 @@ public class ServerManager {
         }
     }
 
+    public boolean addFile(String type, InputStream inputStream, String name, User user){
+        try {
+            byte[] fileAsBytes = inputStreamToByteArray(inputStream);
+            HttpURLConnection httpURLConnection = getHttpURLConnection(context.getString(R.string.add_file));
+            OutputStream outStream = httpURLConnection.getOutputStream();
+            BufferedWriter bWriter = null;
+            bWriter = new BufferedWriter(new OutputStreamWriter(outStream, context.getString(R.string.utf8)));
+            String postData;
+            HashMap map = new HashMap();
+            map.put("name", name);
+            map.put("type", type);
+            map.put("file", String.valueOf(fileAsBytes));
+            postData = preparePostData(map);
+            bWriter.write(postData);
+            bWriter.flush();
+            bWriter.close();
+            outStream.close();
+            InputStream inStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStream, context.getString(R.string.iso)));
+            String result = "";
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                result += line;
+            }
+            bufferedReader.close();
+            inStream.close();
+            return true;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean uploadFile(String type, InputStream inputStream, String name, User user) {
         String crlf = "\r\n";
         String twoHyphens = "--";
         String boundary =  "*****";
-        byte[] fileAsBytes = fileToByteArray(inputStream);
-
+        try {
+            byte[] fileAsBytes = inputStreamToByteArray(inputStream);
+            HttpURLConnection httpURLConnection = getHttpURLConnection(context.getString(R.string.upload_file));
+            httpURLConnection.setUseCaches(false);
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
+            httpURLConnection.setRequestProperty("Cache-Control", "no-cache");
+            httpURLConnection.setRequestProperty(
+                    "Content-Type", "multipart/form-data;boundary=" + boundary);
+            DataOutputStream request = null;
+            request = new DataOutputStream(
+                    httpURLConnection.getOutputStream());
+            request.writeBytes(twoHyphens + boundary + crlf);
+            request.writeBytes("Content-Disposition: form-data; name=\"" +
+                    "file" + "\";filename=\"" +
+                    name + "." + type + "\"" + crlf);
+            request.writeBytes(crlf);
+            request.write(fileAsBytes);
+            request.writeBytes(crlf);
+            request.writeBytes(twoHyphens + boundary +
+                    twoHyphens + crlf);
+            request.flush();
+            request.close();
+            InputStream inStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStream, context.getString(R.string.iso)));
+            String result = "";
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                result += line;
+            }
+            System.out.println(result);
+            bufferedReader.close();
+            inStream.close();
+            httpURLConnection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
-    private byte[] fileToByteArray(InputStream inputStream){
+    private byte[] inputStreamToByteArray(InputStream inputStream){
         ByteArrayOutputStream ous = null;
         try {
             byte[] buffer = new byte[4096];

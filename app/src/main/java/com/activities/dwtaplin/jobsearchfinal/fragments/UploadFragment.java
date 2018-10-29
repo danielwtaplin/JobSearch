@@ -11,6 +11,7 @@ import android.support.design.widget.TabLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -82,7 +83,7 @@ public class UploadFragment extends android.support.v4.app.Fragment {
                 ContentResolver contentResolver = getContext().getContentResolver();
                 try {
                     InputStream inputStream = contentResolver.openInputStream(fileUri);
-                    String type  = "";
+                    String type  = getFileExtension(fileUri);
                     switch(tabLayout.getSelectedTabPosition()){
                         case 0:
                             type = "resume";
@@ -105,7 +106,7 @@ public class UploadFragment extends android.support.v4.app.Fragment {
     }
 
     private String inputFileName() {
-        return null;
+        return "CV";
     }
 
     public void onButtonPressed(Uri uri) {
@@ -152,7 +153,7 @@ public class UploadFragment extends android.support.v4.app.Fragment {
         }
         @Override
         protected Object doInBackground(Object[] objects) {
-            success = new ServerManager(mainActivityWeakReference.get()).uploadFile(type, inputStream, name, user);
+            success = new ServerManager(mainActivityWeakReference.get()).addFile(type, inputStream, name, user);
             return null;
         }
 
@@ -165,5 +166,12 @@ public class UploadFragment extends android.support.v4.app.Fragment {
             super.onPostExecute(o);
         }
 
+    }
+
+    public String getFileExtension(Uri uri)
+    {
+        ContentResolver contentResolver= getContext().getContentResolver();
+        MimeTypeMap mimeTypeMap=MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 }

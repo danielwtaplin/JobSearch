@@ -18,6 +18,7 @@
     <string name="log_in">http://www.roomsnz.com/android/jinder/log_in.php</string>
     <string name="reject">http://www.roomsnz.com/android/jinder/reject_job.php</string>
     <string name="get_watchlist">http://www.roomsnz.com/android/jinder/get_watchlist.php</string>
+    <string name="upload_file">http://www.roomsnz.com/android/jinder/upload_file.php</string>
     <string name="user_id">user_id</string>
     <string name="id">id</string>
 
