@@ -2,6 +2,7 @@ package com.activities.dwtaplin.jobsearchfinal.fragments;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,9 @@ import com.activities.dwtaplin.jobsearchfinal.R;
 import com.activities.dwtaplin.jobsearchfinal.activities.MainActivity;
 import com.activities.dwtaplin.jobsearchfinal.adapters.WatchlistAdapter;
 import com.activities.dwtaplin.jobsearchfinal.components.Job;
+import com.activities.dwtaplin.jobsearchfinal.database.ServerManager;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 
@@ -23,7 +26,7 @@ public class WatchlistFragment extends android.support.v4.app.Fragment {
 
     private String mParam1;
     private String mParam2;
-
+    private RecyclerView recyclerView;
     private OnFragmentInteractionListener mListener;
 
     public WatchlistFragment() {
@@ -53,18 +56,17 @@ public class WatchlistFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         ((MainActivity)getActivity()).getToolbar().setSubtitle("Watchlist");
         View view = inflater.inflate(R.layout.fragment_watchlist, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        watchlistTask watchlistTask = new watchlistTask((MainActivity) getActivity());
+        watchlistTask.execute();
+        return view;
+    }
+
+    public void showWatchlist(ArrayList<Job> jobs){
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1);
-        ArrayList<Job> jobs = new ArrayList();
-        for(int i = 0; i < 10; i++) {
-            jobs.add(new Job("Software Developer", "Auckland",
-                    "Currently seeking a competent and easy going full stack developer. Qualifications not a must but provable abilities is essential.  Must be well versed in Node, RUby on rails and React ",
-                    "Bachelor of Computer Science", "InfoTech Software co"));
-        }
         WatchlistAdapter listAdapter = new WatchlistAdapter(getContext(), jobs);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(listAdapter);
-        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -91,18 +93,33 @@ public class WatchlistFragment extends android.support.v4.app.Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private class watchlistTask extends AsyncTask {
+        private WeakReference<MainActivity> mainActivityWeakReference;
+        private ArrayList<Job> jobs;
+        public watchlistTask(MainActivity activity){
+            this.mainActivityWeakReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            this.jobs = new ServerManager(mainActivityWeakReference.get().getApplicationContext())
+                    .getWatchList(mainActivityWeakReference.get().getUser());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            MainActivity activity = mainActivityWeakReference.get();
+            WatchlistFragment.this.showWatchlist(this.jobs);
+
+
+        }
+
+
     }
 }
