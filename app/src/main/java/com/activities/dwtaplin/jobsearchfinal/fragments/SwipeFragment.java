@@ -33,7 +33,6 @@ public class SwipeFragment extends android.support.v4.app.Fragment {
     private OnFragmentInteractionListener mListener;
     private SwipeFlingAdapterView swipeView;
     public SwipeFragment() {
-        // Required empty public constructor
     }
 
     @Override
