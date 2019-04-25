@@ -21,6 +21,8 @@ import com.activities.dwtaplin.jobsearchfinal.activities.ViewDocActivity;
 import com.activities.dwtaplin.jobsearchfinal.actors.User;
 import com.activities.dwtaplin.jobsearchfinal.components.Job;
 import com.activities.dwtaplin.jobsearchfinal.database.ServerManager;
+import com.activities.dwtaplin.jobsearchfinal.tools.Toolkit;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -57,6 +59,13 @@ public class SwipeAdapter extends ArrayAdapter{
         Button btnWatchlist = view.findViewById(R.id.btnWatchlist);
         Button btnApply = view.findViewById(R.id.btnApply);
         btnWatchlist.setOnClickListener(v -> addToWatchlist(btnWatchlist, job));
+        try{
+            String strDistance = Double.toString(Toolkit.calculateDistanceKM(new LatLng(user.getLng(), user.getLat()), job.getLatLng()));
+            txtDistance.setText(strDistance + " KM");
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
         btnApply.setTag("apply");
         btnApply.setOnClickListener(v -> {
             if((btnApply.getTag()).equals("view")){

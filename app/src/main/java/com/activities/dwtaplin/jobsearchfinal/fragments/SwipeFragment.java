@@ -1,6 +1,5 @@
 package com.activities.dwtaplin.jobsearchfinal.fragments;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -21,13 +20,6 @@ import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SwipeFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- */
 public class SwipeFragment extends android.support.v4.app.Fragment {
 
     private OnFragmentInteractionListener mListener;
