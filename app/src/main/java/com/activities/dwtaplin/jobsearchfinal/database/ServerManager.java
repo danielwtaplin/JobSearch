@@ -447,6 +447,7 @@ public class ServerManager {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inStream, context.getString(R.string.iso)));
             String result = "";
             String line;
+            System.out.println(postData);
             while ((line = bufferedReader.readLine()) != null) {
                 result += line;
             }
@@ -534,4 +535,9 @@ public class ServerManager {
         return ous.toByteArray();
 
     }
+
+    public boolean addFile(){
+        return false;
+    }
+    
 }
